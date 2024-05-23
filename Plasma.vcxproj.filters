@@ -46,7 +46,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="LICENSE.txt">
+    <Text Include="LICENSE.md">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -153,7 +153,7 @@
     <ClInclude Include="toml.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="LICENSE.txt" />
+    <Text Include="LICENSE.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,8 +1,8 @@
-#Project: The Plasma Framework
+# Project: The Plasma Framework
 
-#About: The Plasma Framework Aims to make developing Windows apps a breaze with a batterys included aproche
+# About: The Plasma Framework Aims to make developing Windows apps a breaze with a batterys included aproche
 
-#License:
+# License:
 
 MIT License
 
@@ -19,8 +19,9 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#Toml++: Header-only TOML config file parser and serializer for C++17
-#GitHub: https://github.com/marzer/tomlplusplus
+# Toml++: Header-only TOML config file parser and serializer for C++17
+
+# GitHub: https://github.com/marzer/tomlplusplus
 
 MIT License
 
@@ -44,11 +45,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 
 
-#RapidXml: RapidXml is an attempt to create the fastest XML parser possible, while retaining useability, portability
-and reasonable W3C compatibility. It is an in-situ parser written in modern C++, with parsing speed approaching that of 
-strlen function executed on the same data.
+# RapidXml: RapidXml is an attempt to create the fastest XML parser possible, while retaining useability, portabilityand reasonable W3C compatibility. It is an in-situ parser written in modern C++, with parsing speed approaching that of strlen function executed on the same data.
 
-#GitHub: https://github.com/Fe-Bell/RapidXML
+# GitHub: https://github.com/Fe-Bell/RapidXML
 
 
 Copyright (c) 2006, 2007 Marcin Kalicinski
@@ -74,10 +73,9 @@ IN THE SOFTWARE.
 
 
 
-#simdjson: Parsing gigabytes of JSON per second : used by 
-Facebook/Meta Velox, the Node.js runtime, ClickHouse, WatermelonDB, Apache Doris, Milvus, StarRocks
+# simdjson: Parsing gigabytes of JSON per second : used by Facebook/Meta Velox,the Node.js runtime, ClickHouse, WatermelonDB, Apache Doris, Milvus, StarRocks
 
-#GitHub: https://github.com/simdjson/simdjson
+# GitHub: https://github.com/simdjson/simdjson
 
 
                                  Apache License
