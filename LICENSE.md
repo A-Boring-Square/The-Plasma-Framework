@@ -1,6 +1,6 @@
 # Project: The Plasma Framework
 
-# About: The Plasma Framework Aims to make developing Windows apps a breaze with a batterys included aproche
+# About: The Plasma Framework Aims to make developing Windows apps a breaze with a batterys included approach
 
 # Licenses:
 
