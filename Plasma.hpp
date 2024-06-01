@@ -7,6 +7,8 @@
 #include <functional>
 #include <tuple>
 #include <optional>
+#include <vector>
+
 
 namespace Plasma {
 	namespace Concurrency {
@@ -41,11 +43,37 @@ namespace Plasma {
 			void JoinThread();
 		};
 
+		class ProcessManager {
+		private:
+			PROCESS_INFORMATION ProcessInfo;
+			STARTUPINFOA StartupInfo;
+			HANDLE hInputWrite, hInputRead, hOutputWrite, hOutputRead;
+
+		public:
+			ProcessManager();
+
+			bool StartProcess(const std::string& command);
+
+			void WriteToProcess(const std::string& input);
+
+			std::string ReadFromProcess();
+
+			void Wait();
+
+			~ProcessManager();
+		};
 		
 	} // namespace Concurrency
 
+
+
 	namespace Ui {
-		// Future implementation for the Ui namespace
+
+		class WindowManager {
+		private:
+
+
+		};
 	}
 
 } // namespace Plasma
