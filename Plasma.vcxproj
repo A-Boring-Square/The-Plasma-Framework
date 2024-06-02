@@ -140,9 +140,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Plasma.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Plasma.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Plasma.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
