@@ -8,15 +8,14 @@
 #include <tuple>
 #include <optional>
 #include <vector>
-#include <stdexcept>
 #include "imgui-1.90.7/imgui.h"
 #include "imgui-1.90.7/backends/imgui_impl_sdl2.h"
 #include "imgui-1.90.7/backends/imgui_impl_sdlrenderer2.h"
 #include <stdio.h>
-#include "SDL.h"
+#include "Sdl2/SDL.h"
 
 #if !SDL_VERSION_ATLEAST(2,0,17)
-#error DearImGui requires SDL 2.0.17+ because of SDL_RenderGeometry() function The Gui Functions Will NOT WORK
+#error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
 
 
@@ -51,7 +50,6 @@ namespace Plasma {
 			ThreadManager(std::function<ReturnType(Args...)> Func, Args&&... Args);
 			void StartThread();
 			void JoinThread();
-			~ThreadManager();
 		};
 
 		class ProcessManager {
@@ -78,32 +76,10 @@ namespace Plasma {
 
 
 
-	namespace Gui {
+	namespace Ui {
 
 		class WindowManager {
 		private:
-			SDL_Window* GuiWindow = nullptr;
-			SDL_Renderer* GuiRenderer = nullptr;
-		public:
-			WindowManager(const std::string& WindowTitle, unsigned int Width, unsigned int Height, bool FullScreen, bool Resizeable, const std::string& WindowIconPath);
-			~WindowManager();
-
-			void NewFrame();
-			void Render();
-			void ShowDebugInfo();
-
-			template<typename Func, typename... Args>
-			void AddButton(const char* label, Func&& onClick, Args&&... args);
-
-			void AddText(const char* text);
-
-			template<typename Func, typename... Args>
-			void AddSliderFloat(const char* label, float* v, float v_min, float v_max, Func&& onChange, Args&&... args);
-
-			void AddInputText(const char* label, char* buf, size_t buf_size);
-
-			template<typename Func, typename... Args>
-			void AddCheckbox(const char* label, bool* v, Func&& onChange, Args&&... args);
 
 			template<typename Func, typename... Args>
 			void AddRadioButton(const char* label, bool active, Func&& onClick, Args&&... args);
@@ -122,7 +98,6 @@ namespace Plasma {
 
 
 		};
-
-	} // namespace Gui
+	}
 
 } // namespace Plasma
