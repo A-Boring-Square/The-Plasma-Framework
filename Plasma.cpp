@@ -130,123 +130,157 @@ namespace Plasma {
 	} // namespace Concurrency
 
 	namespace Gui {
-		WindowManager::WindowManager(const std::string& WindowTitle, unsigned int Width, unsigned int Height, bool FullScreen, bool Resizeable, const std::string& WindowIconPath) {
-			// Initialize SDL
-			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
-				throw std::runtime_error("Failed to initialize SDL");
-			}
+        WindowManager::WindowManager(const std::string& WindowTitle, unsigned int Width, unsigned int Height, bool FullScreen, bool Resizeable, const std::string& WindowIconPath) {
+            // Initialize SDL
+            if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
+                throw std::runtime_error("Failed to initialize SDL");
+            }
 
-			// Set SDL window flags
-			Uint32 flags = SDL_WINDOW_SHOWN;
-			if (FullScreen) {
-				flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-			}
-			if (Resizeable) {
-				flags |= SDL_WINDOW_RESIZABLE;
-			}
+            // Set SDL window flags
+            Uint32 flags = SDL_WINDOW_SHOWN;
+            if (FullScreen) {
+                flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+            }
+            if (Resizeable) {
+                flags |= SDL_WINDOW_RESIZABLE;
+            }
 
-			// Create SDL window
-			this->GuiWindow = SDL_CreateWindow(WindowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, flags);
-			if (!this->GuiWindow) {
-				throw std::runtime_error("Failed to create SDL window");
-			}
+            // Create SDL window
+            this->GuiWindow = SDL_CreateWindow(WindowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, flags);
+            if (!this->GuiWindow) {
+                throw std::runtime_error("Failed to create SDL window");
+            }
 
-			// Load window icon
-			SDL_Surface* icon = SDL_LoadBMP(WindowIconPath.c_str());
-			if (icon) {
-				SDL_SetWindowIcon(this->GuiWindow, icon);
-				SDL_FreeSurface(icon);
-			}
+            // Load window icon
+            SDL_Surface* icon = SDL_LoadBMP(WindowIconPath.c_str());
+            if (icon) {
+                SDL_SetWindowIcon(this->GuiWindow, icon);
+                SDL_FreeSurface(icon);
+            }
 
-			// Create SDL renderer
-			this->GuiRenderer = SDL_CreateRenderer(this->GuiWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-			if (!this->GuiRenderer) {
-				throw std::runtime_error("Failed to create SDL renderer");
-			}
+            // Create SDL renderer
+            this->GuiRenderer = SDL_CreateRenderer(this->GuiWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+            if (!this->GuiRenderer) {
+                throw std::runtime_error("Failed to create SDL renderer");
+            }
 
-			// Initialize ImGui context
-			IMGUI_CHECKVERSION();
-			ImGui::CreateContext();
-			ImGuiIO& io = ImGui::GetIO(); (void)io;
+            // Initialize ImGui context
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-			// Initialize ImGui for SDL and the renderer
-			ImGui_ImplSDL2_InitForSDLRenderer(this->GuiWindow, this->GuiRenderer);
-			ImGui_ImplSDLRenderer2_Init(this->GuiRenderer);
+            // Initialize ImGui for SDL and the renderer
+            ImGui_ImplSDL2_InitForSDLRenderer(this->GuiWindow, this->GuiRenderer);
+            ImGui_ImplSDLRenderer2_Init(this->GuiRenderer);
 
-			// Setup ImGui style
-			ImGui::StyleColorsDark();
-		}
+            // Setup ImGui style
+            ImGui::StyleColorsDark();
+        }
 
-		WindowManager::~WindowManager() {
-			// Cleanup ImGui
-			ImGui_ImplSDLRenderer2_Shutdown();
-			ImGui_ImplSDL2_Shutdown();
-			ImGui::DestroyContext();
+        WindowManager::~WindowManager() {
+            // Cleanup ImGui
+            ImGui_ImplSDLRenderer2_Shutdown();
+            ImGui_ImplSDL2_Shutdown();
+            ImGui::DestroyContext();
 
-			// Destroy SDL renderer
-			if (this->GuiRenderer) {
-				SDL_DestroyRenderer(this->GuiRenderer);
-			}
+            // Destroy SDL renderer
+            if (this->GuiRenderer) {
+                SDL_DestroyRenderer(this->GuiRenderer);
+            }
 
-			// Destroy SDL window
-			if (this->GuiWindow) {
-				SDL_DestroyWindow(this->GuiWindow);
-			}
+            // Destroy SDL window
+            if (this->GuiWindow) {
+                SDL_DestroyWindow(this->GuiWindow);
+            }
 
-			// Quit SDL subsystems
-			SDL_Quit();
-		}
+            // Quit SDL subsystems
+            SDL_Quit();
+        }
 
-		void WindowManager::NewFrame() {
-			// Start the ImGui frame
-			ImGui_ImplSDLRenderer2_NewFrame();
-			ImGui_ImplSDL2_NewFrame();
-			ImGui::NewFrame();
-		}
+        void WindowManager::NewFrame() {
+            // Start the ImGui frame
+            ImGui_ImplSDLRenderer2_NewFrame();
+            ImGui_ImplSDL2_NewFrame();
+            ImGui::NewFrame();
+        }
 
-		void WindowManager::Render() {
-			// Render ImGui
-			ImGui::Render();
-			SDL_SetRenderDrawColor(this->GuiRenderer, 0, 0, 0, 255);
-			SDL_RenderClear(this->GuiRenderer);
-			ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), this->GuiRenderer);
-			SDL_RenderPresent(this->GuiRenderer);
-		}
+        void WindowManager::Render() {
+            // Render ImGui
+            ImGui::Render();
+            SDL_SetRenderDrawColor(this->GuiRenderer, 0, 0, 0, 255);
+            SDL_RenderClear(this->GuiRenderer);
+            ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), this->GuiRenderer);
+            SDL_RenderPresent(this->GuiRenderer);
+        }
 
-		void WindowManager::ShowDebugInfo() {
-			ImGui::ShowMetricsWindow();
-			ImGui::ShowDebugLogWindow();
-			ImGui::ShowIDStackToolWindow();
-		}
+        void WindowManager::ShowDebugInfo() {
+            ImGui::ShowMetricsWindow();
+            ImGui::ShowDebugLogWindow();
+            ImGui::ShowIDStackToolWindow();
+        }
 
-		template<typename Func, typename... Args>
-		void WindowManager::AddButton(const char* label, Func&& onClick, Args&&... args) {
-			if (ImGui::Button(label)) {
-				std::invoke(std::forward<Func>(onClick), std::forward<Args>(args)...);
-			}
-		}
+        template<typename Func, typename... Args>
+        void WindowManager::AddButton(const char* label, Func&& onClick, Args&&... args) {
+            if (ImGui::Button(label)) {
+                std::invoke(std::forward<Func>(onClick), std::forward<Args>(args)...);
+            }
+        }
 
-		void WindowManager::AddText(const char* text) {
-			ImGui::Text("%s", text);
-		}
+        void WindowManager::AddText(const char* text) {
+            ImGui::Text("%s", text);
+        }
 
-		template<typename Func, typename... Args>
-		void WindowManager::AddSliderFloat(const char* label, float* v, float v_min, float v_max, Func&& onChange, Args&&... args) {
-			if (ImGui::SliderFloat(label, v, v_min, v_max)) {
-				std::invoke(std::forward<Func>(onChange), std::forward<Args>(args)...);
-			}
-		}
+        template<typename Func, typename... Args>
+        void WindowManager::AddSliderFloat(const char* label, float* v, float v_min, float v_max, Func&& onChange, Args&&... args) {
+            if (ImGui::SliderFloat(label, v, v_min, v_max)) {
+                std::invoke(std::forward<Func>(onChange), std::forward<Args>(args)...);
+            }
+        }
 
-		void WindowManager::AddInputText(const char* label, char* buf, size_t buf_size) {
-			ImGui::InputText(label, buf, buf_size);
-		}
+        void WindowManager::AddInputText(const char* label, char* buf, size_t buf_size) {
+            ImGui::InputText(label, buf, buf_size);
+        }
 
-		template<typename Func, typename... Args>
-		void WindowManager::AddCheckbox(const char* label, bool* v, Func&& onChange, Args&&... args) {
-			if (ImGui::Checkbox(label, v)) {
-				std::invoke(std::forward<Func>(onChange), std::forward<Args>(args)...);
-			}
-		}
+        template<typename Func, typename... Args>
+        void WindowManager::AddCheckbox(const char* label, bool* v, Func&& onChange, Args&&... args) {
+            if (ImGui::Checkbox(label, v)) {
+                std::invoke(std::forward<Func>(onChange), std::forward<Args>(args)...);
+            }
+        }
+
+        template<typename Func, typename... Args>
+        void WindowManager::AddRadioButton(const char* label, bool active, Func&& onClick, Args&&... args) {
+            if (ImGui::RadioButton(label, active)) {
+                std::invoke(std::forward<Func>(onClick), std::forward<Args>(args)...);
+            }
+        }
+
+        void WindowManager::AddCombo(const char* label, const char* items_separated_by_zeros, int* current_item) {
+            ImGui::Combo(label, current_item, items_separated_by_zeros);
+        }
+
+        void WindowManager::AddColorEdit3(const char* label, float col[3]) {
+            ImGui::ColorEdit3(label, col);
+        }
+
+        void WindowManager::AddColorEdit4(const char* label, float col[4]) {
+            ImGui::ColorEdit4(label, col);
+        }
+
+        template<typename Func, typename... Args>
+        void WindowManager::AddTreeNode(const char* label, Func&& onClick, Args&&... args) {
+            if (ImGui::TreeNode(label)) {
+                std::invoke(std::forward<Func>(onClick), std::forward<Args>(args)...);
+                ImGui::TreePop();
+            }
+        }
+
+        template<typename Func, typename... Args>
+        void WindowManager::AddSelectable(const char* label, bool selected, Func&& onClick, Args&&... args) {
+            if (ImGui::Selectable(label, selected)) {
+                std::invoke(std::forward<Func>(onClick), std::forward<Args>(args)...);
+            }
+        }
 
 	} // namespace Gui
 

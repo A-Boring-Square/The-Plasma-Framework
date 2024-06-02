@@ -105,6 +105,21 @@ namespace Plasma {
 			template<typename Func, typename... Args>
 			void AddCheckbox(const char* label, bool* v, Func&& onChange, Args&&... args);
 
+			template<typename Func, typename... Args>
+			void AddRadioButton(const char* label, bool active, Func&& onClick, Args&&... args);
+
+			void AddCombo(const char* label, const char* items_separated_by_zeros, int* current_item);
+
+			void AddColorEdit3(const char* label, float col[3]);
+
+			void AddColorEdit4(const char* label, float col[4]);
+
+			template<typename Func, typename... Args>
+			void AddTreeNode(const char* label, Func&& onClick, Args&&... args);
+
+			template<typename Func, typename... Args>
+			void AddSelectable(const char* label, bool selected, Func&& onClick, Args&&... args);
+
 
 		};
 
