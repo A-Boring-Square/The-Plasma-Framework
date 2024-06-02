@@ -140,20 +140,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="imgui-1.90.7\imgui.cpp" />
-    <ClCompile Include="imgui-1.90.7\imgui_demo.cpp" />
-    <ClCompile Include="imgui-1.90.7\imgui_draw.cpp" />
-    <ClCompile Include="imgui-1.90.7\imgui_tables.cpp" />
-    <ClCompile Include="imgui-1.90.7\imgui_widgets.cpp" />
     <ClCompile Include="Plasma.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="imgui-1.90.7\imconfig.h" />
-    <ClInclude Include="imgui-1.90.7\imgui.h" />
-    <ClInclude Include="imgui-1.90.7\imgui_internal.h" />
-    <ClInclude Include="imgui-1.90.7\imstb_rectpack.h" />
-    <ClInclude Include="imgui-1.90.7\imstb_textedit.h" />
-    <ClInclude Include="imgui-1.90.7\imstb_truetype.h" />
     <ClInclude Include="Plasma.hpp" />
   </ItemGroup>
   <ItemGroup>

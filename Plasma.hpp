@@ -8,6 +8,15 @@
 #include <tuple>
 #include <optional>
 #include <vector>
+#include "imgui-1.90.7/imgui.h"
+#include "imgui-1.90.7/backends/imgui_impl_sdl2.h"
+#include "imgui-1.90.7/backends/imgui_impl_sdlrenderer2.h"
+#include <stdio.h>
+#include "Sdl2/SDL.h"
+
+#if !SDL_VERSION_ATLEAST(2,0,17)
+#error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
+#endif
 
 
 namespace Plasma {
