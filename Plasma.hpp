@@ -26,7 +26,7 @@ namespace Plasma {
 		class MutexedThreadManager {
 		private:
 			std::thread MutexedThread;
-			std::mutex MutexForThread;
+			std::lock_guard<std::mutex> MutexForThread;
 			std::function<ReturnType(Args...)> Function;
 			std::tuple<Args...> ArgsTuple;
 			std::optional<ReturnType> ReturnValue;
@@ -71,6 +71,7 @@ namespace Plasma {
 
 			~ProcessManager();
 		};
+		
 		
 	} // namespace Concurrency
 
