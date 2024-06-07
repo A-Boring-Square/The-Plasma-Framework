@@ -14,8 +14,15 @@
 #include <stdio.h>
 #include "Sdl2/SDL.h"
 
+
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
+#endif
+
+#if _DEBUG
+#define DebugInfo(Message) std::cout << "[PlasmaDebug]: " << Message << std::endl;
+#else
+#define DebugInfo(Message)
 #endif
 
 
@@ -50,6 +57,8 @@ namespace Plasma {
 			ThreadManager(std::function<ReturnType(Args...)> Func, Args&&... Args);
 			void StartThread();
 			void JoinThread();
+			std::optional<ReturnType> GetReturnValue();
+			~ThreadManager();
 		};
 
 		class ProcessManager {
@@ -78,26 +87,64 @@ namespace Plasma {
 
 
 	namespace Ui {
+		namespace Wigets{
+			struct BaseWiget;
+			struct Text;
+			struct Button;
+			struct Checkbox;
+			struct RadioButton;
+			struct ComboBox;
+            struct ListBox;
+            struct SliderInt;
+            struct SliderFloat;
+            struct InputText;
+            struct InputInt;
+            struct InputFloat;
+            struct ColorPicker;
+            struct Tooltip;
+            struct ProgressBar;
+            struct Separator;
+            struct Spacing;
+            struct Indent;
+            struct Unindent;
+            struct ChildWindow;
+            struct Group;
+            struct TabBar;
+            struct Tab;
+            struct CollapsingHeader;
+            struct TreeNode;
+            struct MenuBar;
+            struct Menu;
+            struct MenuItem;
+            struct ContextMenu;
+            struct PlotLines;
+            struct PlotHistogram;
+            struct Columns;
+            struct NextColumn;
+            struct Table;
+            struct DragSource;
+            struct DragTarget;
+            struct Tree;
+            struct Tables;
+            struct Image;
+            struct ImageButton;
+            struct Selectable;
+            struct Bullet;
+            struct Hyperlink;
 
+
+		}
 		class WindowManager {
 		private:
-
-			template<typename Func, typename... Args>
-			void AddRadioButton(const char* label, bool active, Func&& onClick, Args&&... args);
-
-			void AddCombo(const char* label, const char* items_separated_by_zeros, int* current_item);
-
-			void AddColorEdit3(const char* label, float col[3]);
-
-			void AddColorEdit4(const char* label, float col[4]);
-
-			template<typename Func, typename... Args>
-			void AddTreeNode(const char* label, Func&& onClick, Args&&... args);
-
-			template<typename Func, typename... Args>
-			void AddSelectable(const char* label, bool selected, Func&& onClick, Args&&... args);
-
-
+			SDL_Renderer* GuiRenderer;
+			SDL_Window* GuiWindowContext;
+			bool Running;
+		public:
+			WindowManager(std::string& Title, unsigned int Width, unsigned int Height, bool FullScreen);
+			void Render();
+			bool IsRunning() const;
+			
+			~WindowManager();
 		};
 	}
 
