@@ -8,6 +8,7 @@
 #include <tuple>
 #include <optional>
 #include <vector>
+#include <string>
 #include "imgui-1.90.7/imgui.h"
 #include "imgui-1.90.7/backends/imgui_impl_sdl2.h"
 #include "imgui-1.90.7/backends/imgui_impl_sdlrenderer2.h"
@@ -87,7 +88,7 @@ namespace Plasma {
 
 
 	namespace Ui {
-		namespace Wigets{
+		namespace Widgets{
 			struct BaseWiget;
 			struct Text;
 			struct Button;
@@ -141,7 +142,7 @@ namespace Plasma {
 			bool Running;
 		public:
 			WindowManager(std::string& Title, unsigned int Width, unsigned int Height, bool FullScreen);
-			void Render();
+			void Render(std::vector<Widgets::BaseWiget*> Ui);
 			bool IsRunning() const;
 			
 			~WindowManager();

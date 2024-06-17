@@ -79,6 +79,91 @@ namespace Plasma {
 
 
 
+        ProcessManager::ProcessManager() : hInputWrite(NULL), hInputRead(NULL), hOutputWrite(NULL), hOutputRead(NULL) {
+            ZeroMemory(&ProcessInfo, sizeof(PROCESS_INFORMATION));
+            ZeroMemory(&StartupInfo, sizeof(STARTUPINFOA));
+            StartupInfo.cb = sizeof(STARTUPINFOA);
+        }
+
+        bool ProcessManager::StartProcess(const std::string& command) {
+            SECURITY_ATTRIBUTES saAttr;
+            saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+            saAttr.bInheritHandle = TRUE;
+            saAttr.lpSecurityDescriptor = NULL;
+
+            // Create pipes for standard input
+            if (!CreatePipe(&hInputRead, &hInputWrite, &saAttr, 0)) {
+                std::cerr << "StdIn CreatePipe failed" << std::endl;
+                return false;
+            }
+            if (!SetHandleInformation(hInputWrite, HANDLE_FLAG_INHERIT, 0)) {
+                std::cerr << "StdIn SetHandleInformation failed" << std::endl;
+                return false;
+            }
+
+            // Create pipes for standard output
+            if (!CreatePipe(&hOutputRead, &hOutputWrite, &saAttr, 0)) {
+                std::cerr << "StdOut CreatePipe failed" << std::endl;
+                return false;
+            }
+            if (!SetHandleInformation(hOutputRead, HANDLE_FLAG_INHERIT, 0)) {
+                std::cerr << "StdOut SetHandleInformation failed" << std::endl;
+                return false;
+            }
+
+            StartupInfo.hStdError = hOutputWrite;
+            StartupInfo.hStdOutput = hOutputWrite;
+            StartupInfo.hStdInput = hInputRead;
+            StartupInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+            // Create the child process
+            if (!CreateProcessA(NULL, (LPSTR)command.c_str(), NULL, NULL, TRUE, 0, NULL, NULL, &StartupInfo, &ProcessInfo)) {
+                std::cerr << "CreateProcess failed (" << GetLastError() << ")" << std::endl;
+                return false;
+            }
+
+            // Close handles that are no longer needed
+            CloseHandle(hInputRead);
+            CloseHandle(hOutputWrite);
+
+            return true;
+        }
+
+        void ProcessManager::WriteToProcess(const std::string& input) {
+            DWORD written;
+            if (!WriteFile(hInputWrite, input.c_str(), input.size(), &written, NULL)) {
+                std::cerr << "WriteFile to process failed" << std::endl;
+            }
+        }
+
+        std::string ProcessManager::ReadFromProcess() {
+            DWORD read;
+            char buffer[4096];
+            std::string output;
+
+            while (true) {
+                if (!ReadFile(hOutputRead, buffer, sizeof(buffer) - 1, &read, NULL) || read == 0) {
+                    break;
+                }
+                buffer[read] = '\0';
+                output += buffer;
+            }
+
+            return output;
+        }
+
+        void ProcessManager::Wait() {
+            WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+        }
+
+        ProcessManager::~ProcessManager() {
+            CloseHandle(ProcessInfo.hProcess);
+            CloseHandle(ProcessInfo.hThread);
+            CloseHandle(hInputWrite);
+            CloseHandle(hOutputRead);
+        }
+
+
 	} // namespace Concurrency
 
 
@@ -89,91 +174,91 @@ namespace Plasma {
             };
 
             struct Text : BaseWiget {
-                const char* label;
+                const char* Label;
             };
 
             struct Button : BaseWiget {
-                const char* label;
-                std::function<void()> onClick;
+                const char* Label;
+                std::function<void()> OnClick;
             };
 
             struct Checkbox : BaseWiget {
-                const char* label;
-                bool* value;
-                std::function<void(bool)> onChange;
+                const char* Label;
+                bool* Value;
+                std::function<void(bool)> OnChange;
             };
 
             struct RadioButton : BaseWiget {
-                const char* label;
-                int* value;
-                int button_id;
-                std::function<void(int)> onChange;
+                const char* Label;
+                int* Value;
+                int ButtonId;
+                std::function<void(int)> OnChange;
             };
 
             struct ComboBox : BaseWiget {
-                const char* label;
-                const char** items;
-                int item_count;
-                int* current_item;
-                std::function<void(int)> onChange;
+                const char* Label;
+                const char** Items;
+                int ItemCount;
+                int* CurrentItem;
+                std::function<void(int)> OnChange;
             };
 
             struct ListBox : BaseWiget {
-                const char* label;
-                const char** items;
-                int item_count;
-                int* current_item;
-                std::function<void(int)> onChange;
+                const char* Label;
+                const char** Items;
+                int ItemCount;
+                int* CurrentItem;
+                std::function<void(int)> OnChange;
             };
 
             struct SliderInt : BaseWiget {
-                const char* label;
-                int* value;
-                int min;
-                int max;
-                std::function<void(int)> onChange;
+                const char* Label;
+                int* Value;
+                int Min;
+                int Max;
+                std::function<void(int)> OnChange;
             };
 
             struct SliderFloat : BaseWiget {
-                const char* label;
-                float* value;
-                float min;
-                float max;
-                std::function<void(float)> onChange;
+                const char* Label;
+                float* Value;
+                float Min;
+                float Max;
+                std::function<void(float)> OnChange;
             };
 
             struct InputText : BaseWiget {
-                const char* label;
-                char* buffer;
-                size_t buffer_size;
-                std::function<void(const char*)> onChange;
+                const char* Label;
+                char* Buffer;
+                size_t BufferSize;
+                std::function<void(const char*)> OnChange;
             };
 
             struct InputInt : BaseWiget {
-                const char* label;
-                int* value;
-                std::function<void(int)> onChange;
+                const char* Label;
+                int* Value;
+                std::function<void(int)> OnChange;
             };
 
             struct InputFloat : BaseWiget {
-                const char* label;
-                float* value;
-                std::function<void(float)> onChange;
+                const char* Label;
+                float* Value;
+                std::function<void(float)> OnChange;
             };
 
             struct ColorPicker : BaseWiget {
-                const char* label;
-                float color[4];
-                std::function<void(float[4])> onChange;
+                const char* Label;
+                float Color[4];
+                std::function<void(float[4])> OnChange;
             };
 
             struct Tooltip {
-                const char* text;
+                const char* Text;
             };
 
             struct ProgressBar {
-                float fraction;
-                const char* overlay;
+                float Fraction;
+                const char* Overlay;
             };
 
             struct Separator {};
@@ -181,134 +266,134 @@ namespace Plasma {
             struct SameLine {};
 
             struct Spacing {
-                int count;
+                int Count;
             };
 
             struct Indent {
-                float width;
+                float Width;
             };
 
             struct Unindent {
-                float width;
+                float Width;
             };
 
             struct ChildWindow {
-                const char* title;
-                ImVec2 size;
-                bool border;
-                ImGuiWindowFlags flags;
+                const char* Title;
+                ImVec2 Size;
+                bool Border;
+                ImGuiWindowFlags Flags;
             };
 
             struct Group {};
 
             struct TabBar {
-                const char* id;
+                const char* Id;
             };
 
             struct Tab {
-                const char* label;
+                const char* Label;
             };
 
             struct CollapsingHeader {
-                const char* label;
-                bool* open;
+                const char* Label;
+                bool* Open;
             };
 
             struct TreeNode {
-                const char* label;
-                bool* open;
+                const char* Label;
+                bool* Open;
             };
 
             struct MenuBar {};
 
             struct Menu {
-                const char* label;
+                const char* Label;
             };
 
             struct MenuItem {
-                const char* label;
-                bool* selected;
+                const char* Label;
+                bool* Selected;
             };
 
             struct ContextMenu {
-                const char* label;
+                const char* Label;
             };
 
             struct PlotLines {
-                const char* label;
-                const float* values;
-                int value_count;
-                int offset = 0;
-                const char* overlay_text = nullptr;
-                float scale_min = FLT_MAX;
-                float scale_max = FLT_MAX;
-                ImVec2 graph_size = ImVec2(0, 0);
+                const char* Label;
+                const float* Values;
+                int ValueCount;
+                int Offset = 0;
+                const char* OverlayText = nullptr;
+                float ScaleMin = FLT_MAX;
+                float ScaleMax = FLT_MAX;
+                ImVec2 GraphSize = ImVec2(0, 0);
             };
 
             struct PlotHistogram {
-                const char* label;
-                const float* values;
-                int value_count;
-                int offset = 0;
-                const char* overlay_text = nullptr;
-                float scale_min = FLT_MAX;
-                float scale_max = FLT_MAX;
-                ImVec2 graph_size = ImVec2(0, 0);
+                const char* Label;
+                const float* Values;
+                int Value_count;
+                int Offset = 0;
+                const char* OverlayText = nullptr;
+                float ScaleMin = FLT_MAX;
+                float ScaleMax = FLT_MAX;
+                ImVec2 GraphSize = ImVec2(0, 0);
             };
 
             struct Columns {
-                int count;
-                const char* id;
-                bool border = true;
+                int Count;
+                const char* Id;
+                bool Border = true;
             };
 
             struct NextColumn {};
 
             struct Table {
-                const char* id;
-                int columns;
-                ImGuiTableFlags flags = 0;
+                const char* Id;
+                int Columns;
+                ImGuiTableFlags Flags = 0;
             };
 
             struct DragSource {
-                const char* payload_id;
+                const char* PayloadId;
             };
 
             struct DragTarget {
-                const char* payload_id;
+                const char* PayloadId;
             };
 
             struct Tree {
-                const char* label;
+                const char* Label;
             };
 
             struct Tables {
-                const char* id;
-                int columns;
-                ImGuiTableFlags flags = 0;
+                const char* Id;
+                int Columns;
+                ImGuiTableFlags Flags = 0;
             };
 
             struct Image {
-                void* texture_id;
-                float width;
-                float height;
+                void* TextureId;
+                float Width;
+                float Height;
             };
 
             struct ImageButton {
-                void* texture_id;
-                float width;
-                float height;
+                void* TextureId;
+                float Width;
+                float Height;
             };
 
             struct Selectable {
-                const char* label;
-                bool* selected;
+                const char* Label;
+                bool* Selected;
             };
 
             struct Bullet {};
 
             struct Hyperlink {
-                const char* url;
+                const char* Url;
             };
         }
 
@@ -337,7 +422,7 @@ namespace Plasma {
             this->Running = true;
         }
 
-            void WindowManager::Render() {
+            void WindowManager::Render(std::vector<Widgets::BaseWiget*> Ui) {
                 SDL_Event event;
                 while (SDL_PollEvent(&event)) {
                     ImGui_ImplSDL2_ProcessEvent(&event);
@@ -347,7 +432,7 @@ namespace Plasma {
                 ImGui_ImplSDL2_NewFrame();
                 ImGui::NewFrame();
 
-                // Render GUI elements here
+                // TODO:  Render GUI elements
 
                 ImGui::Render();
                 SDL_SetRenderDrawColor(GuiRenderer, 0, 0, 0, 255);
