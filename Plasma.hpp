@@ -9,11 +9,7 @@
 #include <optional>
 #include <vector>
 #include <string>
-#include "imgui-1.90.7/imgui.h"
-#include "imgui-1.90.7/backends/imgui_impl_sdl2.h"
-#include "imgui-1.90.7/backends/imgui_impl_sdlrenderer2.h"
 #include <stdio.h>
-#include "Sdl2/SDL.h"
 
 
 #if !SDL_VERSION_ATLEAST(2,0,17)
@@ -84,69 +80,5 @@ namespace Plasma {
 		
 		
 	} // namespace Concurrency
-
-
-
-	namespace Ui {
-		namespace Widgets{
-			struct BaseWiget;
-			struct Text;
-			struct Button;
-			struct Checkbox;
-			struct RadioButton;
-			struct ComboBox;
-            struct ListBox;
-            struct SliderInt;
-            struct SliderFloat;
-            struct InputText;
-            struct InputInt;
-            struct InputFloat;
-            struct ColorPicker;
-            struct Tooltip;
-            struct ProgressBar;
-            struct Separator;
-            struct Spacing;
-            struct Indent;
-            struct Unindent;
-            struct ChildWindow;
-            struct Group;
-            struct TabBar;
-            struct Tab;
-            struct CollapsingHeader;
-            struct TreeNode;
-            struct MenuBar;
-            struct Menu;
-            struct MenuItem;
-            struct ContextMenu;
-            struct PlotLines;
-            struct PlotHistogram;
-            struct Columns;
-            struct NextColumn;
-            struct Table;
-            struct DragSource;
-            struct DragTarget;
-            struct Tree;
-            struct Tables;
-            struct Image;
-            struct ImageButton;
-            struct Selectable;
-            struct Bullet;
-            struct Hyperlink;
-
-
-		}
-		class WindowManager {
-		private:
-			SDL_Renderer* GuiRenderer;
-			SDL_Window* GuiWindowContext;
-			bool Running;
-		public:
-			WindowManager(std::string& Title, unsigned int Width, unsigned int Height, bool FullScreen);
-			void Render(std::vector<Widgets::BaseWiget*> Ui);
-			bool IsRunning() const;
-			
-			~WindowManager();
-		};
-	}
 
 } // namespace Plasma
